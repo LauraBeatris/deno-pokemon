@@ -1,4 +1,4 @@
-import Pokemon from "./models/pokemon.ts";
+import Pokemon from "./models/Pokemon.ts";
 
 const pokemons: Array<Pokemon> = [
   {
