@@ -12,17 +12,15 @@ class PokemonController {
     params,
     response,
   }: {
-    params: Pick<Pokemon, 'name'>
-    response: any
+    params: Pick<Pokemon, "name">;
+    response: Response;
   }) {
     const findPokemon = pokemons.find((pokemon) =>
       pokemon.name.toLowerCase() === params.name.toLowerCase()
     );
 
-    console.log(findPokemon)
-
     if (!findPokemon) {
-      response.status = 400;
+      response.status = 404;
       response.body = {
         status: "error",
         message: `Cannot find pokemon with name ${params.name}`,
@@ -39,8 +37,8 @@ class PokemonController {
     request,
     response,
   }: {
-    request: Request
-    response: Response
+    request: Request;
+    response: Response;
   }) {
     const body = await request.body();
     const { name, age, abilities } = body.value;
@@ -50,6 +48,74 @@ class PokemonController {
 
     response.status = 201;
     response.body = pokemon;
+  }
+
+  public async put({
+    params,
+    request,
+    response,
+  }: {
+    params: Pick<Pokemon, "name">;
+    request: Request;
+    response: Response;
+  }) {
+    const findPokemonIndex = pokemons.findIndex((pokemon) =>
+      pokemon.name.toLowerCase() === params.name.toLowerCase()
+    );
+
+    if (findPokemonIndex < 0) {
+      response.status = 404;
+      response.body = {
+        status: "error",
+        message: `Cannot find pokemon with name ${params.name}`,
+      };
+
+      return;
+    }
+
+    const body = await request.body();
+    const { name, age, abilities } = body.value;
+
+    const updatedPokemon = {
+      ...pokemons[findPokemonIndex],
+      ...(name ? { name } : {}),
+      ...(age ? { age } : {}),
+      ...(abilities ? { abilities } : {}),
+    };
+
+    pokemons[findPokemonIndex] = updatedPokemon;
+
+    response.status = 200;
+    response.body = updatedPokemon;
+  }
+
+  public delete({
+    params,
+    response,
+  }: {
+    params: Pick<Pokemon, "name">;
+    response: Response;
+  }) {
+    const findPokemonIndex = pokemons.findIndex((pokemon) =>
+      pokemon.name.toLowerCase() === params.name.toLowerCase()
+    );
+
+    if (findPokemonIndex < 0) {
+      response.status = 404;
+      response.body = {
+        status: "error",
+        message: `Cannot find pokemon with name ${params.name}`,
+      };
+
+      return;
+    }
+
+    pokemons.splice(findPokemonIndex);
+
+    response.body = {
+      status: "success",
+      message: `${params.name} was successfully deleted`,
+    };
   }
 }
 
