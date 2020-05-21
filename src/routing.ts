@@ -8,5 +8,6 @@ router
   .get("/pokemons", PokemonController.index)
   .get("/pokemons/:name", PokemonController.show)
   .post("/pokemons", PokemonController.store)
+  .patch("/pokemons/:name", PokemonController.put)
 
 export default router;
