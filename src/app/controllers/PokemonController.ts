@@ -13,7 +13,7 @@ class PokemonController {
     response,
   }: {
     params: Pick<Pokemon, "name">;
-    response: any;
+    response: Response;
   }) {
     const findPokemon = pokemons.find((pokemon) =>
       pokemon.name.toLowerCase() === params.name.toLowerCase()

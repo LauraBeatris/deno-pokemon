@@ -1,8 +1,11 @@
 import { Router } from "https://deno.land/x/oak/mod.ts";
 
 import PokemonController from "./app/controllers/PokemonController.ts";
+import PokemonGenerationsController from "./app/controllers/PokemonGenerationsController.ts";
 
 const router = new Router();
+
+router.get("/pokemons/generations", PokemonGenerationsController.index)
 
 router
   .get("/pokemons", PokemonController.index)
