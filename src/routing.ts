@@ -7,5 +7,6 @@ const router = new Router();
 router
   .get("/pokemons", PokemonController.index)
   .get("/pokemons/:name", PokemonController.show)
+  .post("/pokemons", PokemonController.store)
 
 export default router;
