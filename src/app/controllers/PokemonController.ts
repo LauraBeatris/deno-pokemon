@@ -12,8 +12,8 @@ class PokemonController {
     params,
     response,
   }: {
-    params: Pick<Pokemon, 'name'>
-    response: any
+    params: Pick<Pokemon, "name">;
+    response: any;
   }) {
     const findPokemon = pokemons.find((pokemon) =>
       pokemon.name.toLowerCase() === params.name.toLowerCase()
@@ -37,8 +37,8 @@ class PokemonController {
     request,
     response,
   }: {
-    request: Request
-    response: Response
+    request: Request;
+    response: Response;
   }) {
     const body = await request.body();
     const { name, age, abilities } = body.value;
@@ -53,18 +53,18 @@ class PokemonController {
   public async put({
     params,
     request,
-    response
+    response,
   }: {
-    params: Pick<Pokemon, 'name'>,
-    request: Request,
-    response: Response
-  }){
+    params: Pick<Pokemon, "name">;
+    request: Request;
+    response: Response;
+  }) {
     const findPokemonIndex = pokemons.findIndex((pokemon) =>
       pokemon.name.toLowerCase() === params.name.toLowerCase()
     );
 
     if (findPokemonIndex < 0) {
-      response.status = 404
+      response.status = 404;
       response.body = {
         status: "error",
         message: `Cannot find pokemon with name ${params.name}`,
@@ -77,18 +77,45 @@ class PokemonController {
     const { name, age, abilities } = body.value;
 
     const updatedPokemon = {
-      ...(name ? [name] : []),
-      ...(age ? [age] : []),
-      ...(abilities ? [abilities] : []),
+      ...pokemons[findPokemonIndex],
+      ...(name ? { name } : {}),
+      ...(age ? { age } : {}),
+      ...(abilities ? { abilities } : {}),
+    };
+
+    pokemons[findPokemonIndex] = updatedPokemon;
+
+    response.status = 200;
+    response.body = updatedPokemon;
+  }
+
+  public delete({
+    params,
+    response,
+  }: {
+    params: Pick<Pokemon, "name">;
+    response: Response;
+  }) {
+    const findPokemonIndex = pokemons.findIndex((pokemon) =>
+      pokemon.name.toLowerCase() === params.name.toLowerCase()
+    );
+
+    if (findPokemonIndex < 0) {
+      response.status = 404;
+      response.body = {
+        status: "error",
+        message: `Cannot find pokemon with name ${params.name}`,
+      };
+
+      return;
     }
 
-    pokemons[0] = {
-      ...pokemons[0],
-      ...updatedPokemon
-    }
+    pokemons.splice(findPokemonIndex);
 
-    response.status = 200
-    response.body = updatedPokemon
+    response.body = {
+      status: "success",
+      message: `${params.name} was successfully deleted`,
+    };
   }
 }
 
